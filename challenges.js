@@ -1,17 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-const challenges=[
-{type:'coding',label:'Coding',title:'Python Output',question:'What does this code print?',code:'numbers = [2, 4, 6]\nprint(sum(numbers) / len(numbers))',answer:'It prints 4.0 because the average of 2, 4, and 6 is 4.'},
-{type:'coding',label:'Coding',title:'Debug Thinking',question:'A robot should move 5 steps, but it moves forever. What concept should students check first?',code:'while moving:\n    robot.forward()',answer:'They should check the loop condition. The loop may never become false.'},
-{type:'math',label:'Math',title:'SAT-Style Linear Equation',question:'If 3x + 7 = 22, what is x?',code:'',answer:'x = 5 because 22 - 7 = 15 and 15 divided by 3 is 5.'},
-{type:'math',label:'Math',title:'Probability',question:'A bag has 3 red blocks and 2 blue blocks. What is the probability of picking a blue block?',code:'',answer:'2/5 or 40%, because there are 2 blue blocks out of 5 total blocks.'},
-{type:'ai',label:'AI',title:'Classification',question:'A model predicts whether an email is spam or not spam. What type of machine learning task is this?',code:'',answer:'Classification, because the model chooses between categories.'},
-{type:'ai',label:'AI',title:'Bias Question',question:'Why should students ask where an AI training dataset came from?',code:'',answer:'Because the source of the data can affect fairness, accuracy, and bias.'},
-{type:'beyond-ai',label:'Beyond AI',title:'Human Judgment',question:'If AI gives an answer that sounds confident, what should a student still do?',code:'',answer:'Check the reasoning, verify the source, compare evidence, and decide whether the answer makes sense.'},
-{type:'beyond-ai',label:'Beyond AI',title:'Systems Thinking',question:'Why is launching a STEM program more than choosing tools?',code:'',answer:'Because strong programs need goals, curriculum, trained instructors, student support, assessment, communication, and outcomes.'}
-];
-const grid=document.getElementById('challengeGrid'),filters=document.querySelectorAll('[data-filter]');
-function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}
-function render(filter='all'){if(!grid)return;const list=filter==='all'?challenges:challenges.filter(c=>c.type===filter);grid.innerHTML=list.map(c=>`<article class="challenge-card"><span class="tag">${c.label}</span><h3>${esc(c.title)}</h3><p>${esc(c.question)}</p>${c.code?`<pre><code>${esc(c.code)}</code></pre>`:''}<button class="btn secondary reveal-answer" type="button">Reveal Answer</button><p class="challenge-answer">${esc(c.answer)}</p></article>`).join('');document.querySelectorAll('.reveal-answer').forEach(btn=>btn.addEventListener('click',()=>{const ans=btn.nextElementSibling;ans.classList.toggle('open');btn.textContent=ans.classList.contains('open')?'Hide Answer':'Reveal Answer'}))}
-filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter)}));render();
-const quiz=document.getElementById('quiz'),result=document.getElementById('quizResult');
-if(quiz){quiz.querySelectorAll('button[data-correct]').forEach(btn=>btn.addEventListener('click',()=>{quiz.querySelectorAll('button[data-correct]').forEach(b=>b.classList.remove('correct','wrong'));const ok=btn.dataset.correct==='true';btn.classList.add(ok?'correct':'wrong');result.textContent=ok?'Correct. Tools come after goals, not before. Planning has entered the chat.':'Not quite. Define goals, age group, budget, timeline, and outcomes first.'}))}
+  <meta
+    name="description"
+    content="Interactive coding, robotics, AI, STEM thinking challenges, and a Hangman mini game by Abrar Fahad."
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="main.js"></script>
+  <script defer src="challenges.js"></script>
+  <script defer src="hangman.js"></script>
+
+  <title>Challenges & Games | Abrar Fahad</title>
+</head>
+
+<body>
+  <header class="inner">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Abrar Fahad home">
+        <span>AF</span>
+        <strong>Abrar Fahad</strong>
+      </a>
+
+      <button class="menu" id="menuBtn" aria-label="Open menu" type="button">
+        <i></i>
+        <i></i>
+        <i></i>
+      </button>
+
+      <div class="links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="programs.html">Programs</a>
+        <a href="resources.html">Insights</a>
+        <a href="challenges.html">Challenges</a>
+        <a class="pill" href="contact.html">Contact</a>
+        <button id="themeBtn" class="theme" type="button">Dark</button>
+      </div>
+    </nav>
+
+    <section class="page-title reveal">
+      <p class="eyebrow">Interactive Challenges</p>
+      <h1>Small STEM challenges that make learning feel alive.</h1>
+      <p>
+        Coding puzzles, logic questions, AI thinking prompts, beyond-AI questions,
+        and a small Hangman game for technology vocabulary practice.
+      </p>
+    </section>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="section-head center reveal">
+        <p class="label">Challenge Bank</p>
+        <h2>Try a question. Reveal the answer only when you are ready.</h2>
+      </div>
+
+      <div class="filters reveal" aria-label="Challenge category filters">
+        <button class="filter active" type="button" data-filter="all">All</button>
+        <button class="filter" type="button" data-filter="coding">Coding</button>
+        <button class="filter" type="button" data-filter="logic">Logic</button>
+        <button class="filter" type="button" data-filter="ai">AI</button>
+        <button class="filter" type="button" data-filter="beyond-ai">Beyond AI</button>
+      </div>
+
+      <div class="challenge-grid" id="challengeGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="section">
+      <div class="game reveal">
+        <div>
+          <p class="label">Mini Game</p>
+          <h2>STEM Hangman</h2>
+          <p>
+            Guess the hidden technology word before the attempts run out.
+            Very dramatic for vocabulary, but somehow effective.
+          </p>
+        </div>
+
+        <div class="game-box">
+          <p id="hint">Hint appears here</p>
+          <div class="word" id="wordDisplay" aria-label="Hidden word"></div>
+          <p id="attemptsText"></p>
+          <div class="letters" id="letterGrid" aria-label="Letter choices"></div>
+          <button class="btn primary" id="newWordBtn" type="button">New Word</button>
+          <p id="gameMessage" class="game-message"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="quiz reveal" id="quiz">
+        <p class="label">Quick Quiz</p>
+        <h2>Program design question</h2>
+        <h3>Before buying robotics kits, what should a school define first?</h3>
+
+        <button type="button" data-correct="false">The most expensive robot kit available</button>
+        <button type="button" data-correct="true">Learning goals, age group, budget, timeline, and final project outcome</button>
+        <button type="button" data-correct="false">A logo for the robotics club</button>
+        <button type="button" data-correct="false">A competition date before students learn the tools</button>
+
+        <p id="quizResult" class="quiz-result" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <a class="footer-brand" href="index.html" aria-label="Abrar Fahad home">
+          <span>AF</span>
+          <strong>Abrar Fahad</strong>
+        </a>
+
+        <p>
+          STEM curriculum, robotics programs, AI workshops, lesson plans,
+          coding challenges, competitions, and education program support.
+        </p>
+      </div>
+
+      <div>
+        <h3>Explore</h3>
+        <a href="services.html">Services</a>
+        <a href="programs.html">Program Models</a>
+        <a href="challenges.html">Challenges + Game</a>
+        <a href="resources.html">Insights</a>
+      </div>
+
+      <div>
+        <h3>Contact</h3>
+        <a href="mailto:abrarfahad023@gmail.com">abrarfahad023@gmail.com</a>
+        <a href="tel:+19293134536">(929) 313-4536</a>
+        <a href="https://linkedin.com/in/abrar-fahad029/" target="_blank" rel="noreferrer">LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> Abrar Fahad. All rights reserved.</p>
+      <p>Built for GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>
