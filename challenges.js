@@ -1,147 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+const challenges = [
+  {
+    type: "coding",
+    label: "Coding",
+    title: "Python Output",
+    question: "What does this code print?",
+    code: `numbers = [2, 4, 6]
+print(sum(numbers) / len(numbers))`,
+    answer: "It prints 4.0 because the average of 2, 4, and 6 is 4."
+  },
+  {
+    type: "coding",
+    label: "Coding",
+    title: "Scratch Thinking",
+    question: "In Scratch, which block type is usually used to repeat an action multiple times?",
+    code: "",
+    answer: "A loop block, such as repeat, forever, or repeat until."
+  },
+  {
+    type: "coding",
+    label: "Coding",
+    title: "Debug Thinking",
+    question: "A robot should move 5 steps, but it moves forever. What should students check first?",
+    code: `while moving:
+    robot.forward()`,
+    answer: "They should check the loop condition. The loop may never become false."
+  },
+  {
+    type: "logic",
+    label: "Logic",
+    title: "Pattern Thinking",
+    question: "What comes next in the pattern: 2, 4, 8, 16, ___?",
+    code: "",
+    answer: "32. Each number is multiplied by 2."
+  },
+  {
+    type: "logic",
+    label: "Logic",
+    title: "Step-by-Step Thinking",
+    question: "A drone moves forward, turns right, moves forward, then turns right again. What skill is this practicing?",
+    code: "",
+    answer: "Sequencing and directional logic, which are important for coding and robotics."
+  },
+  {
+    type: "ai",
+    label: "AI",
+    title: "Classification",
+    question: "A model predicts whether an email is spam or not spam. What type of machine learning task is this?",
+    code: "",
+    answer: "Classification, because the model chooses between categories."
+  },
+  {
+    type: "ai",
+    label: "AI",
+    title: "Dataset Thinking",
+    question: "Why should students ask where an AI training dataset came from?",
+    code: "",
+    answer: "Because the source of the data can affect fairness, accuracy, bias, and reliability."
+  },
+  {
+    type: "beyond-ai",
+    label: "Beyond AI",
+    title: "Human Judgment",
+    question: "If AI gives an answer that sounds confident, what should a student still do?",
+    code: "",
+    answer: "Check the reasoning, verify the source, compare evidence, and decide whether the answer makes sense."
+  },
+  {
+    type: "beyond-ai",
+    label: "Beyond AI",
+    title: "Program Design",
+    question: "Why is launching a STEM program more than choosing tools?",
+    code: "",
+    answer: "Because strong programs need goals, curriculum, trained instructors, student support, assessment, communication, and outcomes."
+  }
+];
 
-  <meta
-    name="description"
-    content="Interactive coding, robotics, AI, STEM thinking challenges, and a Hangman mini game by Abrar Fahad."
-  />
+const challengeGrid = document.getElementById("challengeGrid");
+const filterButtons = document.querySelectorAll("[data-filter]");
+let activeFilter = "all";
 
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="main.js"></script>
-  <script defer src="challenges.js"></script>
-  <script defer src="hangman.js"></script>
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-  <title>Challenges & Games | Abrar Fahad</title>
-</head>
+function renderChallenges() {
+  if (!challengeGrid) return;
 
-<body>
-  <header class="inner">
-    <nav class="nav" aria-label="Main navigation">
-      <a class="brand" href="index.html" aria-label="Abrar Fahad home">
-        <span>AF</span>
-        <strong>Abrar Fahad</strong>
-      </a>
+  const visibleChallenges =
+    activeFilter === "all"
+      ? challenges
+      : challenges.filter((challenge) => challenge.type === activeFilter);
 
-      <button class="menu" id="menuBtn" aria-label="Open menu" type="button">
-        <i></i>
-        <i></i>
-        <i></i>
-      </button>
+  challengeGrid.innerHTML = visibleChallenges
+    .map((challenge, index) => {
+      const codeBlock = challenge.code
+        ? `<pre><code>${escapeHtml(challenge.code)}</code></pre>`
+        : "";
 
-      <div class="links" id="navLinks">
-        <a href="index.html">Home</a>
-        <a href="services.html">Services</a>
-        <a href="programs.html">Programs</a>
-        <a href="resources.html">Insights</a>
-        <a href="challenges.html">Challenges</a>
-        <a class="pill" href="contact.html">Contact</a>
-        <button id="themeBtn" class="theme" type="button">Dark</button>
-      </div>
-    </nav>
-
-    <section class="page-title reveal">
-      <p class="eyebrow">Interactive Challenges</p>
-      <h1>Small STEM challenges that make learning feel alive.</h1>
-      <p>
-        Coding puzzles, logic questions, AI thinking prompts, beyond-AI questions,
-        and a small Hangman game for technology vocabulary practice.
-      </p>
-    </section>
-  </header>
-
-  <main>
-    <section class="section">
-      <div class="section-head center reveal">
-        <p class="label">Challenge Bank</p>
-        <h2>Try a question. Reveal the answer only when you are ready.</h2>
-      </div>
-
-      <div class="filters reveal" aria-label="Challenge category filters">
-        <button class="filter active" type="button" data-filter="all">All</button>
-        <button class="filter" type="button" data-filter="coding">Coding</button>
-        <button class="filter" type="button" data-filter="logic">Logic</button>
-        <button class="filter" type="button" data-filter="ai">AI</button>
-        <button class="filter" type="button" data-filter="beyond-ai">Beyond AI</button>
-      </div>
-
-      <div class="challenge-grid" id="challengeGrid" aria-live="polite"></div>
-    </section>
-
-    <section class="section">
-      <div class="game reveal">
-        <div>
-          <p class="label">Mini Game</p>
-          <h2>STEM Hangman</h2>
-          <p>
-            Guess the hidden technology word before the attempts run out.
-            Very dramatic for vocabulary, but somehow effective.
+      return `
+        <article class="card challenge-card">
+          <span class="tag">${escapeHtml(challenge.label)}</span>
+          <h3>${escapeHtml(challenge.title)}</h3>
+          <p>${escapeHtml(challenge.question)}</p>
+          ${codeBlock}
+          <button class="btn secondary answer-btn" type="button" data-answer-index="${index}">
+            Reveal Answer
+          </button>
+          <p class="challenge-answer" hidden>
+            ${escapeHtml(challenge.answer)}
           </p>
-        </div>
+        </article>
+      `;
+    })
+    .join("");
 
-        <div class="game-box">
-          <p id="hint">Hint appears here</p>
-          <div class="word" id="wordDisplay" aria-label="Hidden word"></div>
-          <p id="attemptsText"></p>
-          <div class="letters" id="letterGrid" aria-label="Letter choices"></div>
-          <button class="btn primary" id="newWordBtn" type="button">New Word</button>
-          <p id="gameMessage" class="game-message"></p>
-        </div>
-      </div>
-    </section>
+  challengeGrid.querySelectorAll("[data-answer-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const answer = button.nextElementSibling;
+      const answerIsHidden = answer.hasAttribute("hidden");
 
-    <section class="section">
-      <div class="quiz reveal" id="quiz">
-        <p class="label">Quick Quiz</p>
-        <h2>Program design question</h2>
-        <h3>Before buying robotics kits, what should a school define first?</h3>
+      if (answerIsHidden) {
+        answer.removeAttribute("hidden");
+        button.textContent = "Hide Answer";
+      } else {
+        answer.setAttribute("hidden", "");
+        button.textContent = "Reveal Answer";
+      }
+    });
+  });
+}
 
-        <button type="button" data-correct="false">The most expensive robot kit available</button>
-        <button type="button" data-correct="true">Learning goals, age group, budget, timeline, and final project outcome</button>
-        <button type="button" data-correct="false">A logo for the robotics club</button>
-        <button type="button" data-correct="false">A competition date before students learn the tools</button>
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter;
 
-        <p id="quizResult" class="quiz-result" aria-live="polite"></p>
-      </div>
-    </section>
-  </main>
+    filterButtons.forEach((filterButton) => {
+      filterButton.classList.remove("active");
+    });
 
-  <footer class="footer">
-    <div class="footer-grid">
-      <div>
-        <a class="footer-brand" href="index.html" aria-label="Abrar Fahad home">
-          <span>AF</span>
-          <strong>Abrar Fahad</strong>
-        </a>
+    button.classList.add("active");
+    renderChallenges();
+  });
+});
 
-        <p>
-          STEM curriculum, robotics programs, AI workshops, lesson plans,
-          coding challenges, competitions, and education program support.
-        </p>
-      </div>
+const quiz = document.getElementById("quiz");
+const quizResult = document.getElementById("quizResult");
 
-      <div>
-        <h3>Explore</h3>
-        <a href="services.html">Services</a>
-        <a href="programs.html">Program Models</a>
-        <a href="challenges.html">Challenges + Game</a>
-        <a href="resources.html">Insights</a>
-      </div>
+if (quiz && quizResult) {
+  quiz.querySelectorAll("button[data-correct]").forEach((button) => {
+    button.addEventListener("click", () => {
+      quiz.querySelectorAll("button[data-correct]").forEach((choice) => {
+        choice.classList.remove("correct", "wrong");
+      });
 
-      <div>
-        <h3>Contact</h3>
-        <a href="mailto:abrarfahad023@gmail.com">abrarfahad023@gmail.com</a>
-        <a href="tel:+19293134536">(929) 313-4536</a>
-        <a href="https://linkedin.com/in/abrar-fahad029/" target="_blank" rel="noreferrer">LinkedIn</a>
-      </div>
-    </div>
+      const isCorrect = button.dataset.correct === "true";
+      button.classList.add(isCorrect ? "correct" : "wrong");
 
-    <div class="footer-bottom">
-      <p>© <span id="year"></span> Abrar Fahad. All rights reserved.</p>
-      <p>Built for GitHub Pages.</p>
-    </div>
-  </footer>
-</body>
-</html>
+      quizResult.textContent = isCorrect
+        ? "Correct. Goals, age group, budget, timeline, and outcomes should come before buying tools."
+        : "Not quite. Tools come after the program goals, age group, budget, timeline, and final outcome.";
+    });
+  });
+}
+
+renderChallenges();
